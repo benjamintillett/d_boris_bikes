@@ -47,11 +47,21 @@ module BikeContainer
 		container.bikes = container.bikes.reject &bike_type
 	end
 
-	def get_broken_bikes_from(container)
-		get_bikes_from(container, BROKEN)
+	# def get_broken_bikes_from(container)
+	# 	get_bikes_from(container, BROKEN)
+	# end
+
+	# def get_working_bikes_from(container)
+	# 	get_bikes_from(container, WORKING)
+	# end
+
+	def method_missing(m, *args)
+		method = m.to_s
+		if /^get_(?<bike_type>all|working|broken)_bikes_from/ =~ method
+			get_bikes_from(*args[0], self.class.const_get(bike_type.upcase))
+		else
+			super # Runs the regular method_missing method
+		end
 	end
 
-	def get_working_bikes_from(container)
-		get_bikes_from(container, WORKING)
-	end
 end
